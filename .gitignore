@@ -1,0 +1,38 @@
+# Go 编译输出
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# 依赖目录
+vendor/
+
+# Go 工作区
+/go.work
+/go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+
+# 测试覆盖率
+coverage.txt
+coverage.html
+*.cover
+
+# 环境变量文件
+.env
+.env.local
