@@ -42,14 +42,43 @@ func (p *Person) SetAge(age int) {
 
 **问题：** 误以为需要显式声明实现接口
 
+**错误理解：**
 ```go
-// ❌ 不需要这样做
-type Dog struct {}
-func (d Dog) Speak() string { return "汪汪" }
-// Dog 自动实现了 Animal 接口，不需要显式声明！
+// 以为需要这样显式声明
+type Dog struct implements Animal {}  // ❌ Go 没有这种语法！
 ```
 
-**关键：** Go 是隐式实现，只要方法集匹配，就自动实现接口。
+**正确写法：**
+```go
+// 1. 定义接口
+type Animal interface {
+    Speak() string
+}
+
+// 2. 定义结构体（不需要声明实现任何接口）
+type Dog struct {
+    Name string
+}
+
+// 3. 实现方法（方法签名匹配接口）
+func (d Dog) Speak() string {
+    return "汪汪"
+}
+
+// Dog 自动实现了 Animal 接口！
+// 不需要显式声明，编译器会自动检查
+
+// 4. 使用
+func main() {
+    var animal Animal = Dog{Name: "旺财"}  // ✅ 可以赋值给接口
+    fmt.Println(animal.Speak())            // 输出：汪汪
+}
+```
+
+**关键点：**
+- Go 是隐式实现，只要方法集匹配，就自动实现接口
+- 不需要 `implements` 关键字
+- 编译时自动检查是否实现了接口的所有方法
 
 ### 2. 类型断言
 
@@ -398,14 +427,17 @@ close(ch)       // 这行永远执行不到！
 
 **解决方案：**
 
+**方案1：使用有缓冲 channel（推荐）**
 ```go
-// 方案1：wg 只等 worker，接收单独处理
+// 有缓冲 channel，worker 发送不会阻塞
+ch := make(chan int, 10)
+
 var wg sync.WaitGroup
 for i := 0; i < 3; i++ {
     wg.Add(1)
     go func() {
         defer wg.Done()
-        ch <- doWork()
+        ch <- doWork()  // 不会阻塞，因为有缓冲
     }()
 }
 
@@ -413,14 +445,38 @@ for i := 0; i < 3; i++ {
 wg.Wait()
 close(ch)
 
-// 接收结果
+// 接收结果（取走缓冲区的数据）
 for v := range ch {
     fmt.Println(v)
 }
-
-// 方案2：使用缓冲 channel
-ch := make(chan int, 10)  // 缓冲足够大
 ```
+
+**方案2：无缓冲 channel + 先启动接收**
+```go
+// 无缓冲 channel
+ch := make(chan int)
+
+// 必须先启动接收 goroutine！
+go func() {
+    for v := range ch {
+        fmt.Println(v)
+    }
+}()
+
+var wg sync.WaitGroup
+for i := 0; i < 3; i++ {
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        ch <- doWork()  // 不会阻塞，因为接收方已准备好
+    }()
+}
+
+wg.Wait()
+close(ch)  // 关闭后，接收 goroutine 退出
+```
+
+**重要：** 无缓冲 channel 发送会阻塞，必须确保有接收方在接收！
 
 ### 3. 任务分配不均
 
