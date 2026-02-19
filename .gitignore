@@ -40,3 +40,10 @@ coverage.html
 .vscode
 .idea
 *.iml
+
+# 运行时生成的临时文件
+*.json
+test_dir/
+source.txt
+dest.txt
+config.json
