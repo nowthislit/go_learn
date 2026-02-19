@@ -50,6 +50,21 @@ for _, r := range s {            // 按rune遍历
 }
 ```
 
+### 5. 结构体（Struct）- 提前了解
+```go
+// 结构体用于组合多个字段
+// 将在第6章详细学习
+
+type Student struct {
+    Name  string
+    Score int
+}
+
+// 创建实例
+s1 := Student{Name: "张三", Score: 90}
+s2 := Student{"李四", 85}  // 按位置初始化
+```
+
 ## 练习题
 1. 实现切片反转
 2. 统计字符串中各字符出现次数（map练习）

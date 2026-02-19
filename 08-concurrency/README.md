@@ -73,6 +73,36 @@ mu.Lock()
 mu.Unlock()
 ```
 
+### 5. Context - 上下文控制
+```go
+// 创建context
+ctx := context.Background()
+
+// 可取消的context（手动取消）
+ctx, cancel := context.WithCancel(parent)
+defer cancel()  // 确保调用cancel释放资源
+
+// 带超时的context（自动取消）
+ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+
+// 带截止时间的context
+ctx, cancel := context.WithDeadline(parent, time.Now().Add(5*time.Second))
+
+// 在goroutine中检查取消信号
+select {
+case <-ctx.Done():
+    // context被取消或超时
+    fmt.Println("取消原因:", ctx.Err())  // context.Canceled 或 context.DeadlineExceeded
+    return
+default:
+    // 继续执行
+}
+
+// 创建带值的context（传递请求元数据）
+ctx := context.WithValue(parent, "key", "value")
+val := ctx.Value("key")  // 获取值
+```
+
 ## 经典模式
 
 ### 生产者-消费者

@@ -11,39 +11,43 @@ import (
 func main() {
 	fmt.Println("===== 练习3：计时装饰器 =====")
 
-	// 测试慢速函数
+	// TODO: 调用慢速函数
 	slowFunction()
 
-	// 测试快速函数
+	// TODO: 调用快速函数
 	fastFunction()
 }
 
 // slowFunction 模拟耗时操作
 func slowFunction() {
-	// defer 会在函数返回时执行，计算耗时
+	// TODO: 使用 defer timeTrack("slowFunction")() 计时
+	// 注意：timeTrack() 后面要加 () 才能执行返回的函数
 	defer timeTrack("slowFunction")()
-
 	fmt.Println("slowFunction 开始执行...")
-	time.Sleep(500 * time.Millisecond) // 模拟耗时
+	// TODO: 使用 time.Sleep(500 * time.Millisecond) 模拟耗时
+	time.Sleep(500 * time.Millisecond)
 	fmt.Println("slowFunction 执行完毕")
 }
 
 // fastFunction 快速操作
 func fastFunction() {
+	// TODO: 使用 defer timeTrack("fastFunction")() 计时
 	defer timeTrack("fastFunction")()
-
 	fmt.Println("fastFunction 开始执行...")
-	sum := 0
-	for i := 0; i < 1000000; i++ {
-		sum += i
+	// TODO: 执行一些计算，如循环累加
+	count := 0
+	for i := 0; i < 1000; i++ {
+		count += i
 	}
-	fmt.Printf("fastFunction 计算结果: %d\n", sum)
+	fmt.Println("fastFunction 执行完毕，count:", count)
 }
 
 // timeTrack 返回一个函数，用于计算耗时
 // 使用方式: defer timeTrack("函数名")()
 func timeTrack(name string) func() {
+	// TODO: 记录开始时间
 	start := time.Now()
+	// TODO: 返回一个函数，计算并打印耗时
 	return func() {
 		duration := time.Since(start)
 		fmt.Printf("[计时] %s 耗时: %v\n", name, duration)

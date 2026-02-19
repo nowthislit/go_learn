@@ -36,3 +36,7 @@ coverage.html
 # 环境变量文件
 .env
 .env.local
+
+.vscode
+.idea
+*.iml

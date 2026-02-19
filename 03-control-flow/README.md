@@ -65,6 +65,26 @@ case score >= 90:
 }
 ```
 
+### 4. 错误处理
+```go
+// Go使用返回值而非异常来处理错误
+result, err := divide(10, 3)
+if err != nil {
+    // 处理错误
+    fmt.Println("错误:", err)
+    return
+}
+// 使用正常结果
+fmt.Println("结果:", result)
+
+// 创建错误
+import "errors"
+err := errors.New("除数不能为0")
+
+// 或者使用fmt.Errorf格式化错误
+err := fmt.Errorf("不支持的运算符: %s", op)
+```
+
 ## 练习题
 1. 实现九九乘法表
 2. 判断闰年
